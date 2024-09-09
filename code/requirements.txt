@@ -1,0 +1,7 @@
+fastapi 
+uvicorn 
+sqlalchemy 
+aiokafka 
+websockets
+aiocache
+kafka-python

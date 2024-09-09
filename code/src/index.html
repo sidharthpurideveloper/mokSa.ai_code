@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <style>
+        table {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Live Customers</h2>
+    <table id="live-customers-table">
+        <thead>
+            <tr>
+                <th>Store ID</th>
+                <th>Customers In</th>
+                <th>Customers Out</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2 style="text-align: center;">History (Last 24 Hours)</h2>
+    <table id="history-customers-table">
+        <thead>
+            <tr>
+                <th>Store ID</th>
+                <th>Total Customers In</th>
+                <th>Total Customers Out</th>
+                <th>Hour</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function updateLiveTable(liveData) {
+            const tableBody = document.querySelector("#live-customers-table tbody");
+            tableBody.innerHTML = "";  
+
+            const row = `<tr>
+                <td>${liveData.store_id}</td>
+                <td>${liveData.customers_in}</td>
+                <td>${liveData.customers_out}</td>
+                <td>${liveData.time_stamp}</td>
+            </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row); 
+        }
+
+        function updateHistoryTable(historyData) {
+            const tableBody = document.querySelector("#history-customers-table tbody");
+            tableBody.innerHTML = ""; 
+
+            historyData.forEach(item => {
+                const row = `<tr>
+                    <td>${item.store_id}</td>
+                    <td>${item.total_in}</td>
+                    <td>${item.total_out}</td>
+                    <td>${item.hour}</td>
+                </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);  
+            });
+        }
+
+        // Open WebSocket connection for live and history updates
+        const socket = new WebSocket('ws://127.0.0.1:9009/ws');
+        socket.onopen = function() {
+            console.log('WebSocket connection established');
+        };
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log('Received data:', data);
+
+            if (data.history_data) {
+                updateHistoryTable(data.history_data);
+            }
+
+            if (data.live_data) {
+                updateLiveTable(data.live_data);
+            }
+        };
+        socket.onerror = function(event) {
+            console.error('WebSocket error:', event);
+        };
+        socket.onclose = function() {
+            console.log('WebSocket connection closed');
+        };
+    </script>
+</body>
+</html>
