@@ -6,7 +6,7 @@ Steps to run:
   - conda create --name moksa python=3.10
 
 2. install dependencies
-   cd mokSa.ai_code
+   cd mokSa.ai_code/code
    pip install -r requirements.txt
 
 3. run the fastapi uvicorn server
