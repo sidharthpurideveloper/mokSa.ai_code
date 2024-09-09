@@ -22,4 +22,7 @@ I'm using websockets to stream data to the html table
 I'm using lru cache to cache history endpoints 
 
 
+![image](https://github.com/user-attachments/assets/665eda7c-3648-4a99-bddd-51922421e728)
+
+
 
